@@ -8,6 +8,9 @@ application = Flask(__name__)
 def main():
     return 'hello'
 
+@application.route('/test')
+def test():
+    return {'msg': 'testtesttest'}
 
 if __name__ == '__main__':
     application.run('0.0.0.0', port=5000, debug=True)
