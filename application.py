@@ -11,7 +11,7 @@ cors = CORS(application, resources={r"/*": {"origins": "*"}})
 def main():
     return 'hello'
 
-@application.route('/test')
+@application.route('/test', methods=['POST'])
 def test():
     return {'msg': 'testtesttest'}
 
