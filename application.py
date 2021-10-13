@@ -1,8 +1,11 @@
 from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS
 import random
 import os
 
 application = Flask(__name__)
+
+cors = CORS(application, resources={r"/*": {"origins": "*"}})
 
 @application.route('/')
 def main():
