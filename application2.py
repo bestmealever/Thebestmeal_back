@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, jsonify, request
-from pymongo import MongoClient
 import random
 import os
 import boto3
