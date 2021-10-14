@@ -2,24 +2,21 @@ from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 import random
 import os
-from flaskext.mysql import MySQL
 import jwt
 import datetime
 import hashlib
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 
+from pymongo import MongoClient
+
+client = MongoClient(os.environ.get("MONGO_DB_PATH"))
+
+db = client.thebestmeal
 
 application = Flask(__name__)
 
-mysql = MySQL()
-application.config['MYSQL_DATABASE_USER'] = os.environ["MYSQL_DATABASE_USER"]
-application.config['MYSQL_DATABASE_PASSWORD'] = os.environ["MYSQL_DATABASE_PASSWORD"]
-application.config['MYSQL_DATABASE_DB'] = os.environ["MYSQL_DATABASE_DB"]
-application.config['MYSQL_DATABASE_HOST'] = os.environ["MYSQL_DATABASE_HOST"]
-mysql.init_app(application)
-
-SECRET_KEY = 'SPARTA'
+SECRET_KEY = 'thebestmeal'
 
 cors = CORS(application, resources={r"/*": {"origins": "*"}})
 
@@ -56,36 +53,35 @@ def test():
 @application.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
-
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT count(*) as cnt FROM user_info WHERE id = '{username_receive}'")
-    value = cursor.fetchall()[0]['cnt']
-
-    if value == 0:
-        exists = True
-    else:
-        exists = False
-    conn.commit()
-    conn.close()
+    exists = bool(db.user_info.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
-
 
 @application.route('/sign_up/save', methods=['POST'])
 def sign_up():
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+
+    user_info_count = db.user_info.count()
+
+    if user_info_count == 0:
+        max_value = 1
+    else:
+        max_value = db.user_info.find_one(sort=[("idx", -1)])['idx'] + 1
+
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute("SELECT max(idx) as max FROM user_info")
-    value = cursor.fetchall()
-    idx = value[0]['max']
-    cursor.execute(f"insert into user_info (idx, id, pw, created_at) value({idx + 1}, {username_receive}, {password_hash}, {created_at})")
-    conn.commit()
-    conn.close()
+    doc = {
+        "idx": max_value,
+        "id": username_receive,
+        "pw": password_hash,
+        "profile": "",
+        "profile_pic": "",
+        "created_at": created_at,
+        "updated_at": ""
+    }
+
+    db.user_info.insert_one(doc)
 
     return jsonify({'result': 'success'})
 
