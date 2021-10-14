@@ -53,6 +53,24 @@ def test():
 #     else:
 #         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+@application.route('/sign_up/check_dup', methods=['POST'])
+def check_dup():
+    username_receive = request.form['username_give']
+
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT name FROM user_info WHERE name = '{username_receive}'")
+    value = cursor.fetchall()
+
+    if value == ():
+        exists = True
+    else:
+        exists = False
+    conn.commit()
+    conn.close()
+    return jsonify({'result': 'success', 'exists': exists})
+
+
 @application.route('/sign_up/save', methods=['POST'])
 def sign_up():
     username_receive = request.form['username_give']
