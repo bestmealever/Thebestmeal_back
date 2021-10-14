@@ -59,10 +59,10 @@ def check_dup():
 
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT id FROM user_info WHERE id = '{username_receive}'")
-    value = cursor.fetchall()
+    cursor.execute(f"SELECT count(*) as cnt FROM user_info WHERE id = '{username_receive}'")
+    value = cursor.fetchall()[0]['cnt']
 
-    if value == ():
+    if value == 0:
         exists = True
     else:
         exists = False
