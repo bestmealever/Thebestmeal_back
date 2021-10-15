@@ -36,7 +36,7 @@ def sign_in():
     password_receive = request.form['password_give']
 
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    result = db.users.find_one({'username': username_receive, 'password': pw_hash})
+    result = db.users.find_one({'id': username_receive, 'pw': pw_hash})
 
     if result is not None:
         payload = {
@@ -53,7 +53,7 @@ def sign_in():
 @application.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
-    exists = bool(db.user_info.find_one({"username": username_receive}))
+    exists = bool(db.user_info.find_one({"id": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 @application.route('/sign_up/save', methods=['POST'])
