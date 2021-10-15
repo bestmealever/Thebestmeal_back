@@ -12,11 +12,11 @@ from pymongo import MongoClient
 
 client = MongoClient(os.environ.get("MONGO_DB_PATH"))
 
-db = client.thebestmeal
+db = client.bestmealever
 
 application = Flask(__name__)
 
-SECRET_KEY = 'thebestmeal'
+SECRET_KEY = 'bestmealever'
 
 cors = CORS(application, resources={r"/*": {"origins": "*"}})
 
