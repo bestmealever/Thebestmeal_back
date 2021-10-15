@@ -7,7 +7,7 @@ import boto3
 app = Flask(__name__)
 
 # 배포서버
-# client = MongoClient(os.environ.get("MONGO_DB_PATH"))
+client = MongoClient(os.environ.get("MONGO_DB_PATH"))
 
 # 로컬서버
 client = MongoClient('localhost', 27017)
