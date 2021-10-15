@@ -12,17 +12,17 @@ from pymongo import MongoClient
 
 client = MongoClient(os.environ.get("MONGO_DB_PATH"))
 
-db = client.thebestmeal
+db = client.bestmealever
 
 application = Flask(__name__)
 
-SECRET_KEY = 'thebestmeal'
+SECRET_KEY = 'bestmealever'
 
 cors = CORS(application, resources={r"/*": {"origins": "*"}})
 
 @application.route('/')
 def main():
-    return 'hello'
+    return render_template('index.html')
 
 @application.route('/test', methods=['POST'])
 def test():
@@ -53,7 +53,7 @@ def sign_in():
 @application.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
-    exists = bool(db.user_info.find_one({"username": username_receive}))
+    exists = bool(db.user_info.find_one({"id": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 @application.route('/sign_up/save', methods=['POST'])

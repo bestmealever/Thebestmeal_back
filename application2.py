@@ -10,7 +10,7 @@ app = Flask(__name__)
 client = MongoClient(os.environ.get("MONGO_DB_PATH"))
 
 # 로컬서버
-# client = MongoClient('localhost', 27017)
+client = MongoClient('localhost', 27017)
 
 db = client.team_project
 
@@ -65,13 +65,13 @@ what_you_want = WhatYouWantForMeal()
 
 
 # HTML을 주는 부분
-@app.route('/')
-def home():
-    # global what_you_want
-    # what_you_want = WhatYouWantForMeal()
-    # print('객체 새로 만듬')
-    # return render_template('index.html')
-    return 'hello'
+# @app.route('/')
+# def home():
+#     # global what_you_want
+#     # what_you_want = WhatYouWantForMeal()
+#     # print('객체 새로 만듬')
+#     # return render_template('index.html')
+#     return 'hello'
 
 
 @app.route('/kakao')
