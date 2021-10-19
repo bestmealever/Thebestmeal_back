@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
-SECRET_KEY = 'SECRET_KEY'
+SECRET_KEY = '${{ SECRET_KEY }}'
 
 # 배포서버
 client = MongoClient(os.environ.get("MONGO_DB_PATH"))
@@ -309,12 +309,12 @@ def file_upload():
     file = request.files['file']
     comment = request.form['comment_give']
     s3 = boto3.client('s3',
-                      aws_access_key_id='AWS_ACCESS_KEY_ID',
-                      aws_secret_access_key='AWS_SECRET_ACCESS_KEY'
+                      aws_access_key_id='${{ AWS_ACCESS_KEY_ID }}',
+                      aws_secret_access_key='${{ AWS_SECRET_ACCESS_KEY }}'
                       )
     s3.put_object(
         ACL="public-read",
-        Bucket='BUCKET_NAME',
+        Bucket='${{ BUCKET_NAME }}',
         Body=file,
         Key=file.filename,
         ContentType=file.content_type)
