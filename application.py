@@ -77,7 +77,7 @@ class WhatYouWantForMeal:
 what_you_want = WhatYouWantForMeal()
 
 
-@app.route('/')
+@application.route('/')
 def home():
     global what_you_want
     token_receive = request.cookies.get('mytoken')
@@ -94,19 +94,19 @@ def home():
         return render_template('index-logged-in.html', user_info=user_info)
 
 
-@app.route('/recommend')
+@application.route('/recommend')
 def recommend():
     return render_template('recommend.html')
 
 
-@app.route('/kakao')
+@application.route('/kakao')
 def kakao():
     return render_template('kakao.html')
 
 
 # 회원가입 및 로그인
 
-@app.route('/sign_in', methods=['POST'])
+@application.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
     username_receive = request.form['username_give']
@@ -132,14 +132,14 @@ def sign_in():
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
-@app.route('/sign_up/check_dup', methods=['POST'])
+@application.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.user_info.find_one({"id": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 
-@app.route('/sign_up/save', methods=['POST'])
+@application.route('/sign_up/save', methods=['POST'])
 def sign_up():
     username_receive = request.form['username_give']
     password_receive = request.form['password_give']
@@ -171,7 +171,7 @@ def sign_up():
 
 # 추천 알고리즘
 
-@app.route('/want', methods=['POST'])
+@application.route('/want', methods=['POST'])
 def want():
     want_give_receive = request.form.getlist('want_give[]')
     if want_give_receive == []:
@@ -182,12 +182,12 @@ def want():
         return jsonify({'result': 'success'})
 
 
-@app.route('/want_no', methods=['POST'])
+@application.route('/want_no', methods=['POST'])
 def want_no():
     return {'msg': '먹고 싶은게 없다니...'}
 
 
-@app.route('/yesterday', methods=['POST'])
+@application.route('/yesterday', methods=['POST'])
 def yesterday():
     yesterday_give_receive = request.form.getlist('yesterday_give[]')
     if yesterday_give_receive == []:
@@ -198,14 +198,14 @@ def yesterday():
         return jsonify({'result': 'success'})
 
 
-@app.route('/yesterday_no', methods=['POST'])
+@application.route('/yesterday_no', methods=['POST'])
 def yesterday_no():
     what_you_want.yesterday_no()
     print(what_you_want.want)
     return {'msg': '어제 먹은게 기억이 안나요??'}
 
 
-@app.route('/feeling', methods=['POST'])
+@application.route('/feeling', methods=['POST'])
 def feeling():
     feeling_give_receive = request.form.getlist('feeling_give[]')
     if feeling_give_receive == []:
@@ -221,12 +221,12 @@ def feeling():
                  'msg2': '어때요?!'})
 
 
-@app.route('/feeling_no', methods=['POST'])
+@application.route('/feeling_no', methods=['POST'])
 def feeling_no():
     return {'msg': '하나 이상 선택해줘야 추천을 하지...!!!'}
 
 
-@app.route('/retry', methods=['POST'])
+@application.route('/retry', methods=['POST'])
 def retry():
     what_you_want.retry()
     num = what_you_want.retry_num
@@ -240,14 +240,14 @@ def retry():
              'msg2': '어때요?!'})
 
 
-@app.route('/to_kakao', methods=['POST'])
+@application.route('/to_kakao', methods=['POST'])
 def to_kakao():
     what_you_want.address = request.form['address_give']
     what_you_want.recommend = request.form['recommend_give']
     return render_template('kakao.html')
 
 
-@app.route('/get_keyword', methods=['POST'])
+@application.route('/get_keyword', methods=['POST'])
 def get_keyword():
     print('여기까진 ok')
     search = f'{what_you_want.address} {what_you_want.recommend}'
@@ -255,7 +255,7 @@ def get_keyword():
     return {'search': search}
 
 
-@app.route('/posting')
+@application.route('/posting')
 def posting():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -263,7 +263,7 @@ def posting():
     return render_template('posting.html', user_info=user_info)
 
 
-@app.route('/step1', methods=['POST'])
+@application.route('/step1', methods=['POST'])
 def step1():
     foodname_receive = request.form['foodname_give']
     exists = bool(db.food_info.find_one({'name': foodname_receive}))
@@ -276,7 +276,7 @@ def step1():
         return jsonify({'result': 'fail', 'msg': '이미 있는 음식이예요!'})
 
 
-@app.route('/step2', methods=['POST'])
+@application.route('/step2', methods=['POST'])
 def step2():
     cat_give_receive = request.form.getlist('food_cat_give[]')
     exists = bool(cat_give_receive)
@@ -289,7 +289,7 @@ def step2():
         return {"result": "success"}
 
 
-@app.route('/step3', methods=['POST'])
+@application.route('/step3', methods=['POST'])
 def step3():
     feel_give_receive = request.form.getlist('food_feel_give[]')
     exists = bool(feel_give_receive)
@@ -301,7 +301,7 @@ def step3():
         return {"result": "success"}
 
 
-@app.route('/fileupload', methods=['POST'])
+@application.route('/fileupload', methods=['POST'])
 def file_upload():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -337,7 +337,7 @@ def file_upload():
     return jsonify({'doc2': doc2})
 
 
-@app.route("/get_posts", methods=['GET'])
+@application.route("/get_posts", methods=['GET'])
 def get_posts():
     token_receive = request.cookies.get('mytoken')
     print(token_receive)
@@ -371,7 +371,7 @@ def get_posts():
         return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "posts": posts})
 
 
-@app.route('/update_like', methods=['POST'])
+@application.route('/update_like', methods=['POST'])
 def update_like():
     token_receive = request.cookies.get('mytoken')
     if token_receive is not None:
